@@ -1,0 +1,158 @@
+/*
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/ClientSide/css.css to edit this template
+*/
+/* 
+    Created on : 14 jun 2025, 16:41:51
+    Author     : nicolas
+*/
+/* src/main/webapp/css/style.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.categories {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.categories button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+}
+
+.categories button:hover {
+    background-color: #0056b3;
+}
+
+.product-display {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Basic styling for product items - adjust as needed */
+.product-item {
+    border: 1px solid #ddd;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.product-item img {
+    width: 100px;
+    height: 100px;
+    margin-right: 15px;
+    object-fit: cover;
+}
+
+.product-item h3 {
+    margin: 0 0 5px 0;
+    color: #333;
+}
+
+.product-item p {
+    margin: 0;
+    color: #666;
+}
+
+.navbar {
+            display: flex;
+            justify-content: space-between; /* Alinea elementos a los extremos */
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #333; /* Fondo oscuro para la barra de navegación */
+            color: white;
+            position: relative; /* Necesario para posicionar el dropdown */
+            z-index: 1000; /* Asegura que esté por encima de otros elementos */
+        }
+
+        .navbar h1 {
+            margin: 0;
+            color: white;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-button:hover {
+            background-color: #0056b3;
+        }
+
+        .dropdown-content {
+            display: none; /* Oculto por defecto */
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            right: 0; /* Alinea a la derecha del botón */
+            border-radius: 5px;
+            overflow: hidden; /* Asegura que los bordes redondeados se apliquen */
+        }
+
+        .dropdown-content button {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            background-color: #f9f9f9; /* Fondo de los botones dentro del desplegable */
+            border: none;
+            width: 100%;
+            text-align: left;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .dropdown-content button:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown.show .dropdown-content {
+            display: block; /* Muestra el contenido cuando la clase 'show' está presente */
+        }
+
+        /* Ajustes a los estilos existentes para integrar la navbar */
+        body {
+            /* font-family: Arial, sans-serif; ya definido en Style_index.css */
+            margin: 0; /* Reiniciamos el margin para que la navbar ocupe todo el ancho */
+            /* background-color: #f4f4f4; ya definido en Style_index.css */
+        }
+
+        .header {
+            /* Eliminamos el text-align center si la navbar ya tiene el título principal */
+            /* text-align: center; */
+            margin-bottom: 30px;
+            padding-top: 20px; /* Espacio para que el contenido no se pegue a la navbar */
+        }
