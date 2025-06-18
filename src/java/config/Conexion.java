@@ -6,8 +6,8 @@ import java.sql.SQLException;
 
 public class Conexion {
     Connection con;
-    String url = "jdbc:mysql://localhost:3306/bding?useSSL=false&serverTimezone=UTC";
-    String user = "ROOT";   
+    String url = "jdbc:mysql://localhost:3307/bding?useSSL=false&serverTimezone=UTC";
+    String user = "root";   
     String password = "";
 
     public Conexion() {
