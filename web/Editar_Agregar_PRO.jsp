@@ -76,7 +76,7 @@
             <% }%>
 
             <label>Categoría ID:</label>
-            <input type="number" name="categoriaId" value="<%= (esEdicion && producto.getCategoria() != null) ? String.valueOf(producto.getCategoria().getIdCategoria()) : "0"%>" required>
+            <input type="number" name="categoriaId" value="<%= esEdicion && producto.getCategoria() != null ? producto.getCategoria().getIdCategoria() : "" %>" required>
 
             <label>Proveedor ID:</label>
             <input type="number" name="proveedorId" value="<%= (esEdicion && producto.getProveedor() != null) ? String.valueOf(producto.getProveedor().getIdProveedor()) : "0"%>" required>

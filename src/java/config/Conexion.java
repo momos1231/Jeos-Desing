@@ -29,5 +29,8 @@ public class Conexion {
     public Connection getConnection() {
         return con;
     }
-
+public static Connection getConexion() throws SQLException {
+        return new Conexion().getConnection();
+    }
+    
 }
