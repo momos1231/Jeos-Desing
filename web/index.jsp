@@ -8,6 +8,10 @@
 
     List<Producto> productos = (List<Producto>) request.getAttribute("productos");
 %>
+<%
+    List<Producto> carrito = (List<Producto>) session.getAttribute("carrito");
+    int cantidadCarrito = (carrito != null) ? carrito.size() : 0;
+%>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -89,8 +93,10 @@
             }
 
             .categories {
-                text-align: center;
-                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                padding: 0 20px;
+                gap: 10px;
             }
 
             .categories form {
@@ -107,8 +113,15 @@
                 cursor: pointer;
             }
 
+            .categories .botones {
+                display: flex;
+                gap: 10px;
+                flex: 1;           /* Ocupa todo el espacio */
+                justify-content: center;
+            }
             .categories button:hover {
                 background-color: #1976D2;
+
             }
 
             .contenedor-productos {
@@ -154,7 +167,7 @@
                 <button class="dropdown-button" onclick="toggleDropdown()">Mi Cuenta</button>
                 <div class="dropdown-content" id="myDropdown">
                     <button onclick="location.href = 'login.jsp'">Iniciar Sesión</button>
-                    <!-- Puedes agregar más botones aquí, como "Registrar", "Cerrar sesión", etc. -->
+                    <!-- Puedes agregar más botones aquí, como "Registrar", "Cerrar sesión", etc. -->     
                 </div>
             </div>
         </div>
@@ -164,18 +177,31 @@
         </div>
 
         <div class="categories">
-            <form action="Controlador" method="get">
-                <button type="submit" name="accion" value="listarProductos">Ver Todos</button>
-            </form>
-            <form action="Controlador" method="get">
-                <button type="submit" name="accion" value="listarCamisas">Camisas</button>
-            </form>
-            <form action="Controlador" method="get">
-                <button type="submit" name="accion" value="listarPantalones">Pantalones</button>
-            </form>
-            <form action="Controlador" method="get">
-                <button type="submit" name="accion" value="listarChaquetas">Chaquetas</button>
-            </form>
+            <!-- Contenedor solo para los botones -->
+            <div class="botones" style="flex:1; display:flex; gap:10px; justify-content:center;">
+                <form action="Controlador" method="get">
+                    <button type="submit" name="accion" value="listarProductos">Ver Todos</button>
+                </form>
+                <form action="Controlador" method="get">
+                    <button type="submit" name="accion" value="listarCamisas">Camisas</button>
+                </form>
+                <form action="Controlador" method="get">
+                    <button type="submit" name="accion" value="listarPantalones">Pantalones</button>
+                </form>
+                <form action="Controlador" method="get">
+                    <button type="submit" name="accion" value="listarChaquetas">Chaquetas</button>
+                </form>
+            </div>
+
+            <!-- Ícono del carrito -->
+            <div style="margin-left:40px; position:relative; cursor:pointer; font-size:28px;" onclick="location.href = 'Controlador?accion=verCarrito'">
+                🛒
+                <% if (cantidadCarrito > 0) {%>
+                <span style="position:absolute; top:-8px; right:-8px; background:red; color:white; border-radius:50%; padding:2px 7px; font-size:12px;">
+                    <%= cantidadCarrito%>
+                </span>
+                <% } %>
+            </div>
         </div>
 
         <hr/>
@@ -208,8 +234,16 @@
                         <input type="hidden" name="id" value="<%= p.getIdProducto()%>">
                         <button type="submit" style="margin-top: 10px; background-color: #DC3545; color: white; border: none; padding: 8px 12px; border-radius: 5px;">Eliminar</button>
                     </form>
+                    <form action="Controlador" method="get" style="display:inline-block;">
+                        <input type="hidden" name="accion" value="agregarAlCarrito">
+                        <input type="hidden" name="idProducto" value="<%= p.getIdProducto()%>">
+                        <button type="submit" 
+                                style="margin-top: 10px; background-color: #28A745; color: white; border: none; padding: 8px 12px; border-radius: 5px;">
+                            Comprar
+                        </button>
+                    </form>   
                 </div>
-                        
+
                 <%
                     }
                 } else {
@@ -220,17 +254,17 @@
                 %>
             </div>
         </div>
-<div style="text-align:center; padding: 30px;">
-    <form action="Controlador" method="get">
-        <input type="hidden" name="accion" value="nuevoProducto">
-        <button type="submit" style="background-color: #28A745; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer;">
-            Crear Nuevo Producto
-        </button>
-    </form>
-</div>
+        <div style="text-align:center; padding: 30px;">
+            <form action="Controlador" method="get">
+                <input type="hidden" name="accion" value="nuevoProducto">
+                <button type="submit" style="background-color: #28A745; color: white; padding: 12px 20px; font-size: 16px; border: none; border-radius: 8px; cursor: pointer;">
+                    Crear Nuevo Producto
+                </button>
+            </form>
+        </div>
 
         <script>
-        /* Funci�n para mostrar/ocultar el desplegable */
+            /* Funci�n para mostrar/ocultar el desplegable */
             function toggleDropdown() {
                 document.getElementById("myDropdown").parentNode.classList.toggle("show");
             }

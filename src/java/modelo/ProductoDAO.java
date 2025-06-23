@@ -33,9 +33,9 @@ public class ProductoDAO {
                  " t.idTalla, t.nombre AS nombreTalla " +
                  "FROM producto p " +
                  " LEFT JOIN categoria c   ON p.idCategoria = c.idCategoria " +
-                 " LEFT JOIN proveedor pr  ON p.Proveedor_idProveedor = pr.idProveedor " +
-                 " LEFT JOIN color co      ON p.Color_idColor = co.idColor " +
-                 " LEFT JOIN talla t       ON p.Talla_idTalla = t.idTalla";
+                 " LEFT JOIN proveedor pr  ON p.idProveedor = pr.idProveedor " +
+                 " LEFT JOIN color co      ON p.idColor = co.idColor " +
+                 " LEFT JOIN talla t       ON p.idTalla = t.idTalla";
             
         try {
             con = cn.getConnection();
@@ -81,7 +81,7 @@ while (rs.next()) {
     }
 
     public boolean agregar(Producto p) {
-    String sql = "INSERT INTO producto (nombre, precio, genero, descripcion, foto, idCategoria, Proveedor_idProveedor, Color_idColor, Talla_idTalla) "
+    String sql = "INSERT INTO producto (nombre, precio, genero, descripcion, foto, idCategoria, idProveedor, idColor, idTalla) "
                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     try {
@@ -127,9 +127,9 @@ while (rs.next()) {
 public boolean editar(Producto p) {
     String sql;
     if (p.getFoto() != null) {
-        sql = "UPDATE producto SET nombre=?, precio=?, genero=?, descripcion=?, foto=?, idCategoria=?, Proveedor_idProveedor=?, Color_idColor=?, Talla_idTalla=? WHERE idProducto=?";
+        sql = "UPDATE producto SET nombre=?, precio=?, genero=?, descripcion=?, foto=?, idCategoria=?, Proveedor=?, idColor=?, idTalla=? WHERE idProducto=?";
     } else {
-        sql = "UPDATE producto SET nombre=?, precio=?, genero=?, descripcion=?, idCategoria=?, Proveedor_idProveedor=?, Color_idColor=?, Talla_idTalla=? WHERE idProducto=?";
+        sql = "UPDATE producto SET nombre=?, precio=?, genero=?, descripcion=?, idCategoria=?, idProveedor=?, idColor=?, idTalla=? WHERE idProducto=?";
     }
 
 
@@ -207,15 +207,15 @@ public boolean editar(Producto p) {
             pd.setCategoria(cat);
 
             Proveedor prov = new Proveedor();
-            prov.setIdProveedor(rs.getInt("Proveedor_idProveedor"));
+            prov.setIdProveedor(rs.getInt("idProveedor"));
             pd.setProveedor(prov);
 
             Color color = new Color();
-            color.setIdColor(rs.getInt("Color_idColor"));
+            color.setIdColor(rs.getInt("idColor"));
             pd.setColor(color);
 
             Talla talla = new Talla();
-            talla.setIdTalla(rs.getInt("Talla_idTalla"));
+            talla.setIdTalla(rs.getInt("idTalla"));
             pd.setTalla(talla);
         }
     } catch (Exception e) {
