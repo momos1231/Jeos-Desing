@@ -5,14 +5,17 @@
 package modelo;
 
 public class Cliente {
-    private Long idCliente; // bigint en tu DB
+    private Long idCliente;
     private String nombre;
-    private String direccion;
-    private String email;
-    private int edad;
+    private String direccion; // Coincide con tu DB
+    private String email;     // Coincide con tu DB
+    private int edad;         // Coincide con tu DB
 
-    public Cliente() {}
+    // Constructor vacío
+    public Cliente() {
+    }
 
+    // Constructor con todos los campos de tu DB
     public Cliente(Long idCliente, String nombre, String direccion, String email, int edad) {
         this.idCliente = idCliente;
         this.nombre = nombre;
@@ -21,6 +24,7 @@ public class Cliente {
         this.edad = edad;
     }
 
+    // Getters y Setters
     public Long getIdCliente() {
         return idCliente;
     }
@@ -45,19 +49,19 @@ public class Cliente {
         this.direccion = direccion;
     }
 
-    public String getEmail() {
+    public String getEmail() { // Getter para 'email'
         return email;
     }
 
-    public void setEmail(String email) {
+    public void setEmail(String email) { // Setter para 'email'
         this.email = email;
     }
 
-    public int getEdad() {
+    public int getEdad() { // Getter para 'edad'
         return edad;
     }
 
-    public void setEdad(int edad) {
+    public void setEdad(int edad) { // Setter para 'edad'
         this.edad = edad;
+     }
     }
-}

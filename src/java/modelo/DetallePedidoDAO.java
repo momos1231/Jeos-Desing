@@ -7,24 +7,43 @@ package modelo;
 import config.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DetallePedidoDAO {
-    PreparedStatement ps;
 
-    // Este método toma una conexión ya existente para ser parte de una transacción
-    public boolean guardarDetallePedido(DetallePedido detalle, Connection transactionCon) throws SQLException {
+    Conexion cn = new Conexion();
+
+    /**
+     * Guarda un detalle de pedido en la base de datos.
+     * Este método solo inserta idproducto e idpedido, según la estructura de tu tabla actual.
+     *
+     * @param detalle El objeto DetallePedido a guardar.
+     * @param transactionCon La conexión a la base de datos para la transacción.
+     * @return true si el detalle se guardó correctamente, false en caso contrario.
+     */
+    public boolean guardarDetallePedido(DetallePedido detalle, Connection transactionCon) {
+        // SQL ajustado: Solo idproducto e idpedido
         String sql = "INSERT INTO detalle_pedido (idProducto, idpedido) VALUES (?, ?)";
+        PreparedStatement ps = null;
         try {
             ps = transactionCon.prepareStatement(sql);
             ps.setInt(1, detalle.getProducto().getIdProducto());
             ps.setInt(2, detalle.getPedido().getIdPedido());
 
-            ps.executeUpdate();
-            return true;
+            int affectedRows = ps.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al guardar detalle de pedido: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         } finally {
-            // Importante: No cerrar la conexión aquí, ya que es una conexión de transacción.
-            if (ps != null) try { ps.close(); } catch (SQLException e) { e.printStackTrace(); }
+            try {
+                if (ps != null) ps.close();
+                // IMPORTANTE: NO CERRAR la conexión 'transactionCon' aquí.
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

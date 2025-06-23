@@ -21,6 +21,7 @@ public class PedidoDAO {
         int idPedidoGenerado = 0;
         String sql = "INSERT INTO pedido (cantidad, precio, idCliente, idEmpleado) VALUES (?, ?, ?, ?)";
         try {
+            
             ps = transactionCon.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, pedido.getCantidadItems());
             ps.setDouble(2, pedido.getTotal());
