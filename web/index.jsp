@@ -19,7 +19,6 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Tienda - Principal</title>
-        <!--<link rel="stylesheet" href="css/Style_index.css">-->
         <style>
             body {
                 font-family: Arial, sans-serif;
@@ -167,8 +166,7 @@
                 <button class="dropdown-button" onclick="toggleDropdown()">Mi Cuenta</button>
                 <div class="dropdown-content" id="myDropdown">
                     <button onclick="location.href = 'login.jsp'">Iniciar Sesión</button>
-                    <!-- Puedes agregar más botones aquí, como "Registrar", "Cerrar sesión", etc. -->     
-                </div>
+                    </div>
             </div>
         </div>
 
@@ -177,7 +175,6 @@
         </div>
 
         <div class="categories">
-            <!-- Contenedor solo para los botones -->
             <div class="botones" style="flex:1; display:flex; gap:10px; justify-content:center;">
                 <form action="Controlador" method="get">
                     <button type="submit" name="accion" value="listarProductos">Ver Todos</button>
@@ -193,7 +190,6 @@
                 </form>
             </div>
 
-            <!-- Ícono del carrito -->
             <div style="margin-left:40px; position:relative; cursor:pointer; font-size:28px;" onclick="location.href = 'Controlador?accion=verCarrito'">
                 🛒
                 <% if (cantidadCarrito > 0) {%>
@@ -215,7 +211,8 @@
                 <div class="producto-card">
                     <img src="ControladorImg?id=<%= p.getIdProducto()%>" alt="Imagen del producto">
                     <h3><%= p.getNombre()%></h3>
-                    <p><strong>$<%= p.getPrecio()%></strong></p>
+                    <%-- Línea modificada para manejar 'precio' como int y formatearlo a double --%>
+                    <p><strong>$<%= String.format("%.2f", (double) p.getPrecio()) %></strong></p> 
                     <p><%= p.getGenero()%></p>
                     <p><%= p.getDescripcion()%></p>
                     <p class="color"><strong>Color:</strong> <%= (p.getColor() != null) ? p.getColor().getNombre() : "No definido"%></p>
@@ -223,7 +220,6 @@
                     <p class="talla"><strong>Talla:</strong> <%= (p.getTalla() != null) ? p.getTalla().getNombre() : "No definido"%></p>
                     <p class="proveedor"><strong>Proveedor:</strong> <%= (p.getProveedor() != null) ? p.getProveedor().getNombre_proveedor() : "No definido"%></p>
 
-                    <!-- Botones -->
                     <form action="Controlador" method="get" style="display:inline-block;">
                         <input type="hidden" name="accion" value="editarProducto">
                         <input type="hidden" name="id" value="<%= p.getIdProducto()%>">
@@ -245,8 +241,8 @@
                 </div>
 
                 <%
-                    }
-                } else {
+                        }
+                    } else {
                 %>
                 <p>No hay productos disponibles.</p>
                 <%
@@ -264,7 +260,7 @@
         </div>
 
         <script>
-            /* Funci�n para mostrar/ocultar el desplegable */
+            /* Función para mostrar/ocultar el desplegable */
             function toggleDropdown() {
                 document.getElementById("myDropdown").parentNode.classList.toggle("show");
             }

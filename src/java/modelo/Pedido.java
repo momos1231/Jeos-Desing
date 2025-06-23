@@ -4,27 +4,27 @@
  */
 package modelo;
 
-import java.time.LocalDateTime;
+import java.time.LocalDateTime; // Usar LocalDateTime para fecha_hora si es DATETIME
 
 public class Pedido {
     private int idPedido;
+    private int cantidadItems; // Mapeado a 'cantidad' en tu DB
+    private double total; // Mapeado a 'precio' en tu DB (DOUBLE)
     private Cliente cliente;
-    private LocalDateTime fechaPedido;
-    private double total;
-    private String estado;
+    private Empleado empleado;
+    // Podrías añadir fecha_hora si tu tabla Pedido la tuviera, pero no está en la imagen
+    // private LocalDateTime fechaHoraPedido; // Si existiera en tu DB
 
-    public Pedido() {
-    }
+    public Pedido() {}
 
-    public Pedido(int idPedido, Cliente cliente, LocalDateTime fechaPedido, double total, String estado) {
+    public Pedido(int idPedido, int cantidadItems, double total, Cliente cliente, Empleado empleado) {
         this.idPedido = idPedido;
-        this.cliente = cliente;
-        this.fechaPedido = fechaPedido;
+        this.cantidadItems = cantidadItems;
         this.total = total;
-        this.estado = estado;
+        this.cliente = cliente;
+        this.empleado = empleado;
     }
 
-    // Getters y Setters
     public int getIdPedido() {
         return idPedido;
     }
@@ -33,20 +33,12 @@ public class Pedido {
         this.idPedido = idPedido;
     }
 
-    public Cliente getCliente() {
-        return cliente;
+    public int getCantidadItems() {
+        return cantidadItems;
     }
 
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
-    }
-
-    public LocalDateTime getFechaPedido() {
-        return fechaPedido;
-    }
-
-    public void setFechaPedido(LocalDateTime fechaPedido) {
-        this.fechaPedido = fechaPedido;
+    public void setCantidadItems(int cantidadItems) {
+        this.cantidadItems = cantidadItems;
     }
 
     public double getTotal() {
@@ -57,11 +49,22 @@ public class Pedido {
         this.total = total;
     }
 
-    public String getEstado() {
-        return estado;
+    public Cliente getCliente() {
+        return cliente;
     }
 
-    public void setEstado(String estado) {
-        this.estado = estado;
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
     }
+
+    public Empleado getEmpleado() {
+        return empleado;
+    }
+
+    public void setEmpleado(Empleado empleado) {
+        this.empleado = empleado;
+    }
+    // Si tuvieras fecha_hora en la tabla pedido
+    // public LocalDateTime getFechaHoraPedido() { return fechaHoraPedido; }
+    // public void setFechaHoraPedido(LocalDateTime fechaHoraPedido) { this.fechaHoraPedido = fechaHoraPedido; }
 }

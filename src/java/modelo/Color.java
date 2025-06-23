@@ -5,8 +5,7 @@ public class Color {
     private int idColor;
     private String nombre;
 
-    public Color() {
-    }
+    public Color() {}
 
     public Color(int idColor, String nombre) {
         this.idColor = idColor;
@@ -28,5 +27,4 @@ public class Color {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-    
 }

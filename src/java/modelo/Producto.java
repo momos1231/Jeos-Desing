@@ -7,26 +7,30 @@ package modelo;
 /**
  *
  * @author nicolas
+ *
+/**
+ *
+ * @author nicolas
  */
 public class Producto {
     
-     private int idProducto;
+    private int idProducto;
     private String nombre;
-    private int precio;
+    private int precio; // <--- ¡CAMBIO AQUÍ! DEBE SER int para coincidir con tu DB
     private String genero;
     private String descripcion;
     private byte[] foto;
-    
     
     private Color color;
     private Categoria categoria;
     private Talla talla;
     private Proveedor proveedor;
 
+    // Constructor que recibe 'precio' como int
     public Producto(int idProducto, String nombre, int precio, String genero, String descripcion, byte[] foto, Color color, Categoria categoria, Talla talla, Proveedor proveedor) {
         this.idProducto = idProducto;
         this.nombre = nombre;
-        this.precio = precio;
+        this.precio = precio; // Asignación de int a int
         this.genero = genero;
         this.descripcion = descripcion;
         this.foto = foto;
@@ -36,10 +40,11 @@ public class Producto {
         this.proveedor = proveedor;
     }
 
+    // Constructor que recibe 'precio' como int
     public Producto(int idProducto, String nombre, int precio, String genero, String descripcion, byte[] foto) {
         this.idProducto = idProducto;
         this.nombre = nombre;
-        this.precio = precio;
+        this.precio = precio; // Asignación de int a int
         this.genero = genero;
         this.descripcion = descripcion;
         this.foto = foto;
@@ -48,11 +53,8 @@ public class Producto {
     public Producto() {
     }
     
+    // Getters y Setters
     
-    
-    
-    
-
     public Categoria getCategoria() {
         return categoria;
     }
@@ -77,9 +79,6 @@ public class Producto {
         this.proveedor = proveedor;
     }
 
-    
-    
-   
     public Color getColor() {
         return color;
     }
@@ -104,11 +103,11 @@ public class Producto {
         this.nombre = nombre;
     }
 
-    public int getPrecio() {
+    public int getPrecio() { // <--- ¡CAMBIO AQUÍ! El getter devuelve int
         return precio;
     }
 
-    public void setPrecio(int precio) {
+    public void setPrecio(int precio) { // <--- ¡CAMBIO AQUÍ! El setter recibe int
         this.precio = precio;
     }
 
@@ -137,7 +136,5 @@ public class Producto {
     }
     
 }
-
-
 
 

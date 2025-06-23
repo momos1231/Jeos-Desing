@@ -1,10 +1,16 @@
 
 package modelo;
 
-
 public class Talla {
-     private int idTalla;
+    private int idTalla;
     private String nombre;
+
+    public Talla() {}
+
+    public Talla(int idTalla, String nombre) {
+        this.idTalla = idTalla;
+        this.nombre = nombre;
+    }
 
     public int getIdTalla() {
         return idTalla;
@@ -21,5 +27,4 @@ public class Talla {
     public void setNombre(String nombre) {
         this.nombre = nombre;
     }
-
 }

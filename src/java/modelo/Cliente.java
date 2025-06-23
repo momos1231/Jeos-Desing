@@ -4,22 +4,16 @@
  */
 package modelo;
 
-/**
- *
- * @author Administrador
- */
-
 public class Cliente {
-    private int idCliente;
+    private Long idCliente; // bigint en tu DB
     private String nombre;
     private String direccion;
     private String email;
     private int edad;
 
-    public Cliente() {
-    }
+    public Cliente() {}
 
-    public Cliente(int idCliente, String nombre, String direccion, String email, int edad) {
+    public Cliente(Long idCliente, String nombre, String direccion, String email, int edad) {
         this.idCliente = idCliente;
         this.nombre = nombre;
         this.direccion = direccion;
@@ -27,12 +21,11 @@ public class Cliente {
         this.edad = edad;
     }
 
-    // Getters y Setters
-    public int getIdCliente() {
+    public Long getIdCliente() {
         return idCliente;
     }
 
-    public void setIdCliente(int idCliente) {
+    public void setIdCliente(Long idCliente) {
         this.idCliente = idCliente;
     }
 
@@ -66,16 +59,5 @@ public class Cliente {
 
     public void setEdad(int edad) {
         this.edad = edad;
-    }
-
-    @Override
-    public String toString() {
-        return "Cliente{" +
-               "idCliente=" + idCliente +
-               ", nombre='" + nombre + '\'' +
-               ", direccion='" + direccion + '\'' +
-               ", email='" + email + '\'' +
-               ", edad=" + edad +
-               '}';
     }
 }

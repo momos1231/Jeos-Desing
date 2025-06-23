@@ -8,46 +8,87 @@ import config.Conexion;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- * @author FAMILIA RUSSI
- */
 public class ColorDAO {
-     Conexion cn = new Conexion();
     Connection con;
     PreparedStatement ps;
     ResultSet rs;
+
     public List<Color> listar() {
         List<Color> lista = new ArrayList<>();
-        String sql = "SELECT * FROM color";  // ajusta el nombre de tu tabla
+        String sql = "SELECT * FROM color";
         try {
-            con = cn.getConnection();
+            con = Conexion.getConexion();
             ps = con.prepareStatement(sql);
             rs = ps.executeQuery();
             while (rs.next()) {
-                Color c = new Color();
-                c.setIdColor(rs.getInt("idColor"));    // ajusta campos
-                c.setNombre(rs.getString("nombre"));   // ajusta campos
-                lista.add(c);
+                Color co = new Color();
+                co.setIdColor(rs.getInt("idColor"));
+                co.setNombre(rs.getString("nombre"));
+                lista.add(co);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return lista;
     }
-    
-    public boolean agregar(Color color) {
-    String sql = "INSERT INTO color(nombre) VALUES(?)";
-    try (Connection con = cn.getConnection();
-         PreparedStatement ps = con.prepareStatement(sql)) {
-        ps.setString(1, color.getNombre());
-        return ps.executeUpdate() > 0;
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+
+    public Color listarId(int id) {
+        Color co = null;
+        String sql = "SELECT * FROM color WHERE idColor = ?";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setInt(1, id);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                co = new Color();
+                co.setIdColor(rs.getInt("idColor"));
+                co.setNombre(rs.getString("nombre"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) rs.close();
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return co;
     }
-}
+
+    public boolean agregar(Color color) {
+        String sql = "INSERT INTO color (nombre) VALUES (?)";
+        try {
+            con = Conexion.getConexion();
+            ps = con.prepareStatement(sql);
+            ps.setString(1, color.getNombre());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (ps != null) ps.close();
+                if (con != null) con.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

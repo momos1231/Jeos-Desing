@@ -30,7 +30,7 @@ public class ClienteDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 Cliente c = new Cliente();
-                c.setIdCliente(rs.getInt("idCliente"));
+                c.setIdCliente(rs.getLong("idCliente"));
                 c.setNombre(rs.getString("nombre"));
                 c.setDireccion(rs.getString("direccion"));
                 c.setEmail(rs.getString("email"));
@@ -64,7 +64,7 @@ public class ClienteDAO {
             rs = ps.executeQuery();
             if (rs.next()) {
                 cliente = new Cliente();
-                cliente.setIdCliente(rs.getInt("idCliente"));
+                cliente.setIdCliente(rs.getLong("idCliente"));
                 cliente.setNombre(rs.getString("nombre"));
                 cliente.setDireccion(rs.getString("direccion"));
                 cliente.setEmail(rs.getString("email"));

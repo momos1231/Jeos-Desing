@@ -1,148 +1,139 @@
-<%-- 
-    Document   : carrito.jsp
-    Created on : 22/06/2025, 7:00:56 p. m.
-    Author     : FAMILIA RUSSI
---%>
-
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
-<%@page import="java.util.*, modelo.Producto, modelo.Talla, modelo.Color"%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="java.util.*, modelo.Producto" %>
 <%
-    List<Producto> carrito = (List<Producto>) request.getAttribute("carrito");
-    List<Talla> tallas = (List<Talla>) request.getAttribute("tallas");
-    List<Color> colores = (List<Color>) request.getAttribute("colores");
-
-    int total = 0;
-    if (carrito != null) {
-        for (Producto p : carrito) {
-            total += p.getPrecio();
-        }
-    }
+    List<Producto> carrito = (List<Producto>) session.getAttribute("carrito");
 %>
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Mi Carrito</title>
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #f7f7f7;
-                padding: 20px;
-            }
-            h1 {
-                text-align: center;
-                color: #333;
-            }
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                background: #fff;
-                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-                border-radius: 8px;
-                overflow: hidden;
-            }
-            table th, table td {
-                padding: 12px;
-                border-bottom: 1px solid #ddd;
-                text-align: left;
-            }
-            table th {
-                background-color: #2196F3;
-                color: white;
-            }
-            .total-row td {
-                font-weight: bold;
-                background: #eee;
-            }
-            .actions {
-                text-align: center;
-                padding-top: 20px;
-            }
-            a, button {
-                text-decoration: none;
-                padding: 10px 20px;
-                background-color: #28A745;
-                color: white;
-                border-radius: 5px;
-                border: none;
-                cursor: pointer;
-                margin: 5px; /* Added margin for spacing */
-            }
-            a:hover, button:hover {
-                background-color: #218838;
-            }
-            .remove-btn {
-                background-color: #dc3545; /* Red color for remove button */
-            }
-            .remove-btn:hover {
-                background-color: #c82333;
-            }
-        </style>
-    </head>
-    <body>
-        <h1>Mi Carrito</h1>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito de Compras</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total {
+            font-weight: bold;
+            text-align: right;
+            padding-top: 10px;
+        }
+        .acciones {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .acciones button, .acciones a {
+            padding: 10px 15px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block; /* Para que los botones se vean bien en la misma línea */
+            font-size: 16px;
+        }
+        .acciones button.comprar {
+            background-color: #28a745;
+            color: white;
+        }
+        .acciones button.vaciar {
+            background-color: #dc3545;
+            color: white;
+        }
+        .acciones a.volver {
+            background-color: #007bff;
+            color: white;
+        }
+        .producto-img {
+            width: 80px; /* Tamaño fijo para la imagen del producto en el carrito */
+            height: 80px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mi Carrito de Compras</h1>
 
-        <%
-            if (carrito == null || carrito.isEmpty()) {
-        %>
-            <p style="text-align:center;">Tu carrito está vacío.</p>
-            <div class="actions">
-                <a href="Controlador?accion=listarProductos">Volver a la tienda</a>
-            </div>
-        <%
-            } else {
-        %>
+    <% if (carrito == null || carrito.isEmpty()) { %>
+        <p>Tu carrito está vacío.</p>
+    <% } else { %>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Imagen</th>
+                    <th>Precio Unitario</th>
+                    <th>Cantidad</th>
+                    <th>Subtotal</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% 
+                    double total = 0.0; // <-- CAMBIO IMPORTANTE: Declarar total como double
+                    for (Producto p : carrito) { 
+                        // Aquí asumo que cada producto en el carrito representa una "unidad" o un "item"
+                        // Si tuvieras una cantidad por producto en el carrito, deberías ajustarlo
+                        // Por ahora, estoy sumando el precio de cada producto individualmente.
+                        // Si necesitas manejar cantidades, el modelo de carrito debe ser más complejo (e.g., Map<Producto, Integer> o una clase CarritoItem)
+                        double subtotalItem = p.getPrecio(); // p.getPrecio() devuelve int, pero se asigna a double sin problema
+                        total += subtotalItem; // Suma a double
+                %>
+                <tr>
+                    <td><%= p.getNombre()%></td>
+                    <td><img src="ControladorImg?id=<%= p.getIdProducto()%>" alt="<%= p.getNombre()%>" class="producto-img"></td>
+                    <td>$<%= String.format("%.2f", (double) p.getPrecio()) %></td> <%-- Castear a double para formateo --%>
+                    <td>1</td> <%-- Asumiendo cantidad 1 por cada item en el carrito, ajusta si tu lógica es diferente --%>
+                    <td>$<%= String.format("%.2f", subtotalItem) %></td>
+                    <td>
+                        <form action="Controlador" method="post" onsubmit="return confirm('¿Estás seguro de quitar este producto?');">
+                            <input type="hidden" name="accion" value="quitarDelCarrito">
+                            <input type="hidden" name="idProducto" value="<%= p.getIdProducto()%>">
+                            <button type="submit" style="background-color: #f44336; color: white; padding: 5px 10px; border-radius: 3px; cursor: pointer;">Quitar</button>
+                        </form>
+                    </td>
+                </tr>
+                <% } %>
+            </tbody>
+        </table>
+        <div class="total">
+            Total a Pagar: $<%= String.format("%.2f", total) %>
+        </div>
+    <% } %>
 
-        <form action="Controlador" method="post">
-            <input type="hidden" name="accion" value="procesarCarrito">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Precio ($)</th>
-                        <th>Talla</th>
-                        <th>Color</th>
-                        <th>Acciones</th> <%-- New column for actions --%>
-                    </tr>
-                </thead>
-                <tbody>
-                    <% for (Producto p : carrito) { %>
-                        <tr>
-                            <td><%= p.getNombre() %></td>
-                            <td><%= p.getPrecio() %></td>
-                            <td>
-                                <select name="tallaSeleccionada_<%= p.getIdProducto() %>">
-                                    <% for (Talla t : tallas) { %>
-                                        <option value="<%= t.getIdTalla() %>"><%= t.getNombre() %></option>
-                                    <% } %>
-                                </select>
-                            </td>
-                            <td>
-                                <select name="colorSeleccionado_<%= p.getIdProducto() %>">
-                                    <% for (Color c : colores) { %>
-                                        <option value="<%= c.getIdColor() %>"><%= c.getNombre() %></option>
-                                    <% } %>
-                                </select>
-                            </td>
-                            <td>
-                                <a href="Controlador?accion=eliminarDelCarrito&idProducto=<%= p.getIdProducto() %>" class="remove-btn">Eliminar</a>
-                            </td>
-                        </tr>
-                    <% } %>
-                    <tr class="total-row">
-                        <td>Total</td>
-                        <td colspan="4"><%= total %> $</td> <%-- colspan changed to 4 --%>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="actions">
-                <button type="submit">Confirmar Compra</button>
-                <a href="Controlador?accion=listarProductos">Seguir comprando</a>
-            </div>
-        </form>
-
-        <%
-            }
-        %>
-    </body>
+    <div class="acciones">
+        <% if (carrito != null && !carrito.isEmpty()) { %>
+            <form action="Controlador" method="post" style="display:inline-block;">
+                <input type="hidden" name="accion" value="procesarCompra">
+                <button type="submit" class="comprar">Proceder al Pago</button>
+            </form>
+            <form action="Controlador" method="post" style="display:inline-block;" onsubmit="return confirm('¿Estás seguro de vaciar el carrito?');">
+                <input type="hidden" name="accion" value="vaciarCarrito">
+                <button type="submit" class="vaciar">Vaciar Carrito</button>
+            </form>
+        <% } %>
+        <a href="Controlador?accion=listarProductos" class="volver">Seguir Comprando</a>
+    </div>
+</body>
 </html>

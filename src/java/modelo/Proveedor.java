@@ -2,9 +2,17 @@
 package modelo;
 
 public class Proveedor {
-     private int idProveedor;
-    private String nombre_proveedor;
-    private String  Correo;
+    private int idProveedor;
+    private String nombre_proveedor; // Coincide con tu MER
+    private String correo; // Coincide con tu MER
+
+    public Proveedor() {}
+
+    public Proveedor(int idProveedor, String nombre_proveedor, String correo) {
+        this.idProveedor = idProveedor;
+        this.nombre_proveedor = nombre_proveedor;
+        this.correo = correo;
+    }
 
     public int getIdProveedor() {
         return idProveedor;
@@ -23,12 +31,10 @@ public class Proveedor {
     }
 
     public String getCorreo() {
-        return Correo;
+        return correo;
     }
 
-    public void setCorreo(String Correo) {
-        this.Correo = Correo;
+    public void setCorreo(String correo) {
+        this.correo = correo;
     }
-    
-
 }
