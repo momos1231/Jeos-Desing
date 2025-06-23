@@ -27,6 +27,11 @@ import modelo.Proveedor;
 import modelo.ProveedorDAO;
 import modelo.Talla;
 import modelo.TallaDAO;
+import modelo.Cliente;
+import modelo.ClienteDAO;
+import modelo.Pedido;
+import modelo.PedidoDAO;
+import modelo.DetallePedido;
 import java.util.Iterator;
 
 @MultipartConfig
