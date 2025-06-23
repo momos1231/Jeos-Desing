@@ -66,9 +66,16 @@
                 border-radius: 5px;
                 border: none;
                 cursor: pointer;
+                margin: 5px; /* Added margin for spacing */
             }
             a:hover, button:hover {
                 background-color: #218838;
+            }
+            .remove-btn {
+                background-color: #dc3545; /* Red color for remove button */
+            }
+            .remove-btn:hover {
+                background-color: #c82333;
             }
         </style>
     </head>
@@ -86,7 +93,6 @@
             } else {
         %>
 
-        <!-- Formulario que envía la elección de tallas y colores -->
         <form action="Controlador" method="post">
             <input type="hidden" name="accion" value="procesarCarrito">
             <table>
@@ -96,6 +102,7 @@
                         <th>Precio ($)</th>
                         <th>Talla</th>
                         <th>Color</th>
+                        <th>Acciones</th> <%-- New column for actions --%>
                     </tr>
                 </thead>
                 <tbody>
@@ -117,11 +124,14 @@
                                     <% } %>
                                 </select>
                             </td>
+                            <td>
+                                <a href="Controlador?accion=eliminarDelCarrito&idProducto=<%= p.getIdProducto() %>" class="remove-btn">Eliminar</a>
+                            </td>
                         </tr>
                     <% } %>
                     <tr class="total-row">
                         <td>Total</td>
-                        <td colspan="3"><%= total %> $</td>
+                        <td colspan="4"><%= total %> $</td> <%-- colspan changed to 4 --%>
                     </tr>
                 </tbody>
             </table>

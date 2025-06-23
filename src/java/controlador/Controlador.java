@@ -27,283 +27,255 @@ import modelo.Proveedor;
 import modelo.ProveedorDAO;
 import modelo.Talla;
 import modelo.TallaDAO;
+import java.util.Iterator;
 
-/**
- *
- * @author nicolas
- */
 @MultipartConfig
 @WebServlet(name = "Controlador_1", urlPatterns = {"/Controlador_1"})
 public class Controlador extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         String accion = request.getParameter("accion");
-        ProductoDAO dao = new ProductoDAO();
 
-        // LISTAR PRODUCTOS
-        if ("listarProductos".equals(accion)) {
-            List<Producto> lista = dao.listar();    // traemos la lista de productos reales
-            request.setAttribute("productos", lista);
-            request.getRequestDispatcher("index.jsp").forward(request, response);
-        } // MOSTRAR FORMULARIO PARA CREAR
-        else if ("nuevoProducto".equals(accion)) {
-            CategoriaDAO categoriaDAO = new CategoriaDAO();
-            ProveedorDAO proveedorDAO = new ProveedorDAO();
-            ColorDAO colorDAO = new ColorDAO();
-            TallaDAO tallaDAO = new TallaDAO();
+        // DECLARA LAS INSTANCIAS DE DAO UNA SOLA VEZ AL PRINCIPIO
+        ProductoDAO productoDAO = new ProductoDAO(); // Renombrado para evitar conflicto con "dao" si lo tienes en otro lado
+        CategoriaDAO categoriaDAO = new CategoriaDAO();
+        ProveedorDAO proveedorDAO = new ProveedorDAO();
+        ColorDAO colorDAO = new ColorDAO();
+        TallaDAO tallaDAO = new TallaDAO();
 
-            request.setAttribute("categorias", categoriaDAO.listar());
-            request.setAttribute("proveedores", proveedorDAO.listar());
-            request.setAttribute("colores", colorDAO.listar());
-            request.setAttribute("tallas", tallaDAO.listar());
-            request.getRequestDispatcher("Editar_Agregar_PRO.jsp").forward(request, response);
-        } // CREAR PRODUCTO
-        else if ("agregarProducto".equals(accion)) {
-            try {
-                // Recogemos los campos
-                String nombre = request.getParameter("nombre");
-                String precioStr = request.getParameter("precio");
-                String genero = request.getParameter("genero");
-                String descripcion = request.getParameter("descripcion");
+        if (accion != null) {
+            switch (accion) {
+                case "listarProductos":
+                    List<Producto> lista = productoDAO.listar();
+                    request.setAttribute("productos", lista);
+                    request.getRequestDispatcher("index.jsp").forward(request, response);
+                    break;
+                case "nuevoProducto":
+                    request.setAttribute("categorias", categoriaDAO.listar());
+                    request.setAttribute("proveedores", proveedorDAO.listar());
+                    request.setAttribute("colores", colorDAO.listar());
+                    request.setAttribute("tallas", tallaDAO.listar());
+                    request.getRequestDispatcher("Editar_Agregar_PRO.jsp").forward(request, response);
+                    break;
+                case "agregarProducto":
+                    try {
+                        String nombre = request.getParameter("nombre");
+                        String precioStr = request.getParameter("precio");
+                        String genero = request.getParameter("genero");
+                        String descripcion = request.getParameter("descripcion");
+                        Part fotoPart = request.getPart("foto");
+                        String categoriaIdStr = request.getParameter("categoriaId");
+                        String proveedorIdStr = request.getParameter("proveedorId");
+                        String colorIdStr = request.getParameter("colorId");
+                        String tallaIdStr = request.getParameter("tallaId");
 
-                Part fotoPart = request.getPart("foto");
-                String categoriaIdStr = request.getParameter("categoriaId");
-                String proveedorIdStr = request.getParameter("proveedorId");
-                String colorIdStr = request.getParameter("colorId");
-                String tallaIdStr = request.getParameter("tallaId");
+                        int precio = Integer.parseInt(precioStr.trim());
+                        int idCategoria = Integer.parseInt(categoriaIdStr.trim());
+                        int idProveedor = Integer.parseInt(proveedorIdStr.trim());
+                        int idColor = Integer.parseInt(colorIdStr.trim());
+                        int idTalla = Integer.parseInt(tallaIdStr.trim());
 
-                
+                        byte[] foto = null;
+                        if (fotoPart != null && fotoPart.getSize() > 0) {
+                            foto = fotoPart.getInputStream().readAllBytes();
+                        }
 
-                // Parseamos campos numéricos solo si no son nulos o vacíos
-                int precio = Integer.parseInt(precioStr.trim());
-                int idCategoria = Integer.parseInt(categoriaIdStr.trim());
-                int idProveedor = Integer.parseInt(proveedorIdStr.trim());
-                int idColor = Integer.parseInt(colorIdStr.trim());
-                int idTalla = Integer.parseInt(tallaIdStr.trim());
+                        Producto p = new Producto();
+                        p.setNombre(nombre);
+                        p.setPrecio(precio);
+                        p.setGenero(genero);
+                        p.setDescripcion(descripcion);
+                        if (foto != null) {
+                            p.setFoto(foto);
+                        }
 
-                // Procesamos la imagen
-                byte[] foto = null;
-                if (fotoPart != null && fotoPart.getSize() > 0) {
-                    foto = fotoPart.getInputStream().readAllBytes();
-                }
+                        Categoria cat = new Categoria();
+                        cat.setIdCategoria(idCategoria);
+                        p.setCategoria(cat);
+                        Proveedor prov = new Proveedor();
+                        prov.setIdProveedor(idProveedor);
+                        p.setProveedor(prov);
+                        Color color = new Color();
+                        color.setIdColor(idColor);
+                        p.setColor(color);
+                        Talla talla = new Talla();
+                        talla.setIdTalla(idTalla);
+                        p.setTalla(talla);
 
-                // Construimos el objeto Producto
-                Producto p = new Producto();
-                p.setNombre(nombre);
-                p.setPrecio(precio);
-                p.setGenero(genero);
-                p.setDescripcion(descripcion);
-                if (foto != null) {
-                    p.setFoto(foto);
-                }
+                        boolean insertado = productoDAO.agregar(p); // Usar productoDAO
+                        System.out.println("¿Se insertó el producto? " + insertado);
 
-                Categoria cat = new Categoria();
-                cat.setIdCategoria(idCategoria);
-                p.setCategoria(cat);
-                Proveedor prov = new Proveedor();
-                prov.setIdProveedor(idProveedor);
-                p.setProveedor(prov);
-                Color color = new Color();
-                color.setIdColor(idColor);
-                p.setColor(color);
-                Talla talla = new Talla();
-                talla.setIdTalla(idTalla);
-                p.setTalla(talla);
+                        response.sendRedirect("Controlador?accion=listarProductos");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.sendRedirect("Controlador?accion=listarProductos&error=insertError");
+                    }
+                    break;
+                case "editarProducto":
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Producto p = productoDAO.buscarPorId(id); // Usar productoDAO
 
-                // Intentamos insertar
-                boolean insertado = dao.agregar(p);
-                System.out.println("¿Se insertó el producto? " + insertado);
+                    request.setAttribute("categorias", categoriaDAO.listar());
+                    request.setAttribute("proveedores", proveedorDAO.listar());
+                    request.setAttribute("colores", colorDAO.listar());
+                    request.setAttribute("tallas", tallaDAO.listar());
+                    request.setAttribute("producto", p);
+                    request.getRequestDispatcher("Editar_Agregar_PRO.jsp").forward(request, response);
+                    break;
+                case "actualizarProducto":
+                    try {
+                        int idProd = Integer.parseInt(request.getParameter("idProducto"));
+                        String nombre = request.getParameter("nombre");
+                        int precio = Integer.parseInt(request.getParameter("precio"));
+                        String genero = request.getParameter("genero");
+                        String descripcion = request.getParameter("descripcion");
 
-                // Redirigimos al listado
-                response.sendRedirect("Controlador?accion=listarProductos");
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendRedirect("Controlador?accion=listarProductos&error=insertError");
+                        Part fotoPart = request.getPart("foto");
+                        byte[] foto = null;
+                        if (fotoPart != null && fotoPart.getSize() > 0) {
+                            foto = fotoPart.getInputStream().readAllBytes();
+                        }
+
+                        int idCategoria = Integer.parseInt(request.getParameter("categoriaId"));
+                        int idProveedor = Integer.parseInt(request.getParameter("proveedorId"));
+                        int idColor = Integer.parseInt(request.getParameter("colorId"));
+                        int idTalla = Integer.parseInt(request.getParameter("tallaId"));
+
+                        Producto productoActualizar = new Producto();
+                        productoActualizar.setIdProducto(idProd);
+                        productoActualizar.setNombre(nombre);
+                        productoActualizar.setPrecio(precio);
+                        productoActualizar.setGenero(genero);
+                        productoActualizar.setDescripcion(descripcion);
+                        if (foto != null) {
+                            productoActualizar.setFoto(foto);
+                        }
+
+                        Categoria catAct = new Categoria();
+                        catAct.setIdCategoria(idCategoria);
+                        productoActualizar.setCategoria(catAct);
+
+                        Proveedor provAct = new Proveedor();
+                        provAct.setIdProveedor(idProveedor);
+                        productoActualizar.setProveedor(provAct);
+
+                        Color colorAct = new Color();
+                        colorAct.setIdColor(idColor);
+                        productoActualizar.setColor(colorAct);
+
+                        Talla tallaAct = new Talla();
+                        tallaAct.setIdTalla(idTalla);
+                        productoActualizar.setTalla(tallaAct);
+
+                        productoDAO.editar(productoActualizar); // Usar productoDAO
+                        response.sendRedirect("Controlador?accion=listarProductos");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.sendRedirect("Controlador?accion=listarProductos&error=updateError");
+                    }
+                    break;
+                case "agregarColorDesdeProducto":
+                    try {
+                        String nombreColor = request.getParameter("nombreColor");
+                        if (nombreColor != null && !nombreColor.trim().isEmpty()) {
+                            Color color = new Color();
+                            color.setNombre(nombreColor);
+                            colorDAO.agregar(color); // USAR la instancia ya declarada
+                        }
+                        response.sendRedirect("Controlador?accion=nuevoProducto");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertColorError");
+                    }
+                    break;
+                case "agregarTallaDesdeProducto":
+                    try {
+                        String nombreTalla = request.getParameter("nombreTalla");
+                        if (nombreTalla != null && !nombreTalla.trim().isEmpty()) {
+                            Talla talla = new Talla();
+                            talla.setNombre(nombreTalla);
+                            tallaDAO.agregar(talla); // USAR la instancia ya declarada
+                        }
+                        response.sendRedirect("Controlador?accion=nuevoProducto");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertTallaError");
+                    }
+                    break;
+                case "agregarProveedorDesdeProducto":
+                    try {
+                        String nombreProveedor = request.getParameter("nombreProveedor");
+                        String correoProveedor = request.getParameter("correoProveedor");
+                        if (nombreProveedor != null && !nombreProveedor.trim().isEmpty() &&
+                            correoProveedor != null && !correoProveedor.trim().isEmpty()) {
+                            Proveedor proveedor = new Proveedor();
+                            proveedor.setNombre_proveedor(nombreProveedor);
+                            proveedor.setCorreo(correoProveedor);
+                            proveedorDAO.agregar(proveedor); // USAR la instancia ya declarada
+                        }
+                        response.sendRedirect("Controlador?accion=nuevoProducto");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertProveedorError");
+                    }
+                    break;
+                case "eliminarProducto":
+                    int idEliminarDB = Integer.parseInt(request.getParameter("id"));
+                    productoDAO.eliminar(idEliminarDB); // Usar productoDAO
+                    response.sendRedirect("Controlador?accion=listarProductos");
+                    break;
+
+                // --- ACCIONES DEL CARRITO ---
+                case "agregarAlCarrito":
+                    int idProductoAgregar = Integer.parseInt(request.getParameter("idProducto"));
+                    Producto productoAgregar = productoDAO.buscarPorId(idProductoAgregar); // Usar productoDAO
+                    List<Producto> carritoAgregar = (List<Producto>) request.getSession().getAttribute("carrito");
+
+                    if (carritoAgregar == null) {
+                        carritoAgregar = new ArrayList<>();
+                    }
+                    carritoAgregar.add(productoAgregar);
+                    request.getSession().setAttribute("carrito", carritoAgregar);
+                    response.sendRedirect("Controlador?accion=listarProductos");
+                    break;
+                case "verCarrito":
+                    List<Producto> carritoVer = (List<Producto>) request.getSession().getAttribute("carrito");
+                    
+                    // Ya tenemos las instancias de DAO declaradas al principio
+                    List<Talla> tallas = tallaDAO.listar();
+                    List<Color> colores = colorDAO.listar();
+
+                    request.setAttribute("tallas", tallas);
+                    request.setAttribute("colores", colores);
+                    request.setAttribute("carrito", carritoVer);
+                    request.getRequestDispatcher("Carrito.jsp").forward(request, response);
+                    break;
+                case "eliminarDelCarrito":
+                    int idProductoEliminarCarrito = Integer.parseInt(request.getParameter("idProducto"));
+                    List<Producto> carritoSesion = (List<Producto>) request.getSession().getAttribute("carrito");
+
+                    if (carritoSesion != null) {
+                        Iterator<Producto> iterator = carritoSesion.iterator();
+                        while (iterator.hasNext()) {
+                            Producto pCarrito = iterator.next();
+                            if (pCarrito.getIdProducto() == idProductoEliminarCarrito) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                        request.getSession().setAttribute("carrito", carritoSesion);
+                    }
+                    response.sendRedirect("Controlador?accion=verCarrito");
+                    break;
+                default:
+                    response.getWriter().println("Acción no reconocida: " + accion);
+                    break;
             }
-        } // MOSTRAR FORMULARIO PARA EDITAR
-        else if ("editarProducto".equals(accion)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            Producto p = dao.buscarPorId(id);  // Este método debe devolver un Producto con todos sus datos
-            CategoriaDAO categoriaDAO = new CategoriaDAO();
-            ProveedorDAO proveedorDAO = new ProveedorDAO();
-            ColorDAO colorDAO = new ColorDAO();
-            TallaDAO tallaDAO = new TallaDAO();
-
-            
-
-            request.setAttribute("categorias", categoriaDAO.listar());
-            request.setAttribute("proveedores", proveedorDAO.listar());
-            request.setAttribute("colores", colorDAO.listar());
-            request.setAttribute("tallas", tallaDAO.listar());
-
-            request.setAttribute("producto", p);
-            request.getRequestDispatcher("Editar_Agregar_PRO.jsp").forward(request, response);
-        } // ACTUALIZAR PRODUCTO
-        else if ("actualizarProducto".equals(accion)) {
-            int id = Integer.parseInt(request.getParameter("idProducto"));
-            String nombre = request.getParameter("nombre");
-            int precio = Integer.parseInt(request.getParameter("precio"));
-            String genero = request.getParameter("genero");
-            String descripcion = request.getParameter("descripcion");
-
-            Part fotoPart = request.getPart("foto");
-            byte[] foto = null;
-            if (fotoPart != null && fotoPart.getSize() > 0) {
-                foto = fotoPart.getInputStream().readAllBytes();
-            }
-
-            int idCategoria = Integer.parseInt(request.getParameter("categoriaId"));
-            int idProveedor = Integer.parseInt(request.getParameter("proveedorId"));
-            int idColor = Integer.parseInt(request.getParameter("colorId"));
-            int idTalla = Integer.parseInt(request.getParameter("tallaId"));
-
-            Producto p = new Producto();
-            p.setIdProducto(id);
-            p.setNombre(nombre);
-            p.setPrecio(precio);
-            p.setGenero(genero);
-            p.setDescripcion(descripcion);
-            if (foto != null) {
-                p.setFoto(foto); // solo si llega nueva imagen
-            }
-            Categoria cat = new Categoria();
-            cat.setIdCategoria(idCategoria);
-            p.setCategoria(cat);
-
-            Proveedor prov = new Proveedor();
-            prov.setIdProveedor(idProveedor);
-            p.setProveedor(prov);
-
-            Color color = new Color();
-            color.setIdColor(idColor);
-            p.setColor(color);
-
-            Talla talla = new Talla();
-            talla.setIdTalla(idTalla);
-            p.setTalla(talla);
-
-            // Usar dao.editar en lugar de dao.actualizar
-            dao.editar(p);
+        } else {
             response.sendRedirect("Controlador?accion=listarProductos");
         }
-        else if ("agregarColorDesdeProducto".equals(accion)) {
-    try {
-        String nombreColor = request.getParameter("nombreColor");
-
-        if (nombreColor != null && !nombreColor.trim().isEmpty()) {
-            Color color = new Color();
-            color.setNombre(nombreColor);
-
-            ColorDAO colorDAO = new ColorDAO();
-            colorDAO.agregar(color);
-        }
-
-        response.sendRedirect("Controlador?accion=nuevoProducto");
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertColorError");
-    }
-}
-        
-        else if ("agregarTallaDesdeProducto".equals(accion)) {
-    try {
-        String nombreTalla = request.getParameter("nombreTalla");
-
-        if (nombreTalla != null && !nombreTalla.trim().isEmpty()) {
-            Talla talla = new Talla();
-            talla.setNombre(nombreTalla);
-
-            TallaDAO tallaDAO = new TallaDAO();
-            tallaDAO.agregar(talla);
-        }
-
-        response.sendRedirect("Controlador?accion=nuevoProducto");
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertTallaError");
-    }
-}
-else if ("agregarProveedorDesdeProducto".equals(accion)) {
-    try {
-        String nombreProveedor = request.getParameter("nombreProveedor");
-        String correoProveedor = request.getParameter("correoProveedor");
-
-        if (nombreProveedor != null && !nombreProveedor.trim().isEmpty() &&
-            correoProveedor != null && !correoProveedor.trim().isEmpty()) {
-
-            Proveedor proveedor = new Proveedor();
-            proveedor.setNombre_proveedor(nombreProveedor);
-            proveedor.setCorreo(correoProveedor);
-
-            ProveedorDAO proveedorDAO = new ProveedorDAO();
-            proveedorDAO.agregar(proveedor);
-        }
-
-        response.sendRedirect("Controlador?accion=nuevoProducto");
-    } catch (Exception e) {
-        e.printStackTrace();
-        response.sendRedirect("Controlador?accion=nuevoProducto&error=insertProveedorError");
-    }
-}
-        
-
-// ELIMINAR PRODUCTO
-        else if ("eliminarProducto".equals(accion)) {
-            int id = Integer.parseInt(request.getParameter("id"));
-            dao.eliminar(id);
-            response.sendRedirect("Controlador?accion=listarProductos");
-        } // ACCIÓN DESCONOCIDA
-        else {
-            response.getWriter().println("Acción no reconocida: " + accion);
-        }
-
-        //acciones Carrito:
-        if ("agregarAlCarrito".equals(accion)) {
-            int idProducto = Integer.parseInt(request.getParameter("idProducto"));
-
-            // Traemos el producto
-            Producto producto = dao.buscarPorId(idProducto);
-
-            // Obtenemos el carrito de la sesión
-            List<Producto> carrito = (List<Producto>) request.getSession().getAttribute("carrito");
-
-            if (carrito == null) {
-                carrito = new ArrayList<>();
-            }
-
-            carrito.add(producto);
-
-            // Lo guardamos en sesión
-            request.getSession().setAttribute("carrito", carrito);
-
-            // Redirigimos de vuelta a la lista de productos
-            response.sendRedirect("Controlador?accion=listarProductos");
-        } else if ("verCarrito".equals(accion)) {
-            List<Producto> carrito = (List<Producto>) request.getSession().getAttribute("carrito");
-            TallaDAO tallaDao = new TallaDAO();
-            ColorDAO colorDao = new ColorDAO();
-
-            List<Talla> tallas = tallaDao.listar();
-            List<Color> colores = colorDao.listar();
-
-            request.setAttribute("tallas", tallas);
-            request.setAttribute("colores", colores);
-
-            request.setAttribute("carrito", carrito);
-            request.getRequestDispatcher("Carrito.jsp").forward(request, response);
-        }
-
     }
 
     @Override
@@ -312,33 +284,14 @@ else if ("agregarProveedorDesdeProducto".equals(accion)) {
         processRequest(request, response);
     }
 
-    
-    
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
- 
-    
+        return "Controlador principal para la gestión de productos y carrito.";
+    }
 }
